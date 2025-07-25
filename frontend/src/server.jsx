@@ -5,11 +5,16 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import DeletePage from "./pages/delete.jsx";
 import { destroy } from "./actions/destroy.jsx";
 import ErrorPage from "./pages/error.jsx";
+import Auth from "./Auth.jsx";
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: <App/>,
+  },
+  {
+    path: '/login/callback',
+    element: <Auth/>,
   }
 ])
 

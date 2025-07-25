@@ -25,7 +25,7 @@ function FileViewer() {
         !opened ? "hidden" : ""
       } overflow-auto bg-black/85`}
     >
-      <CircleX className="absolute top-4 right-4 cursor-pointer" size={60} color="#ffffff" onClick={() => setOpened(false)} />
+      <CircleX className="absolute top-4 right-4 cursor-pointer" size={50} color="#ffffff" onClick={() => setOpened(false)} />
       <img
         className="max-w-[700px]"
         src={"https://forms-homo.salvador.ba.gov.br/uploads/" + file[0]}

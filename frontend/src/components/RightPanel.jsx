@@ -16,7 +16,7 @@ function RightPanel() {
       setPanelOpen(true);
       let fields = {};
       fields.protocolo = e.detail?.data.protocolo;
-      fields.status = e.detail?.data.status;
+      fields.status = e.detail?.data.status;20250725518556
       fields.created_at = e.detail?.data.created_at;
       Object.values(e.detail?.data.respostas[0]).forEach((value) => {
         fields[value.titulo] = value.resposta;
@@ -44,7 +44,7 @@ function RightPanel() {
     setMainMenu(false);
     setFilesInLoading(true);
     await axios
-      .get(`http://localhost:3000/get_files/${panelData.protocolo}`)
+      .get(`${import.meta.env.VITE_GET_FILES_ENDPOINT}/${panelData.protocolo}`)
       .then((response) => {
         setFiles(response.data);
       });
@@ -93,13 +93,15 @@ function RightPanel() {
 
         <div className="grid grid-cols-2 border-b justify-evenly">
           <button
-            className="p-2 font-bold hover:bg-gray-300 cursor-pointer"
+            className={`p-2 font-bold hover:bg-gray-300 cursor-pointer ${
+              mainMenu ? "bg-gray-300" : ""}`}
             onClick={() => setMainMenu(true)}
           >
             Visão Geral
           </button>
           <button
-            className="p-2 font-bold hover:bg-gray-300 cursor-pointer"
+            className={`p-2 font-bold hover:bg-gray-300 cursor-pointer ${
+              mainMenu ? "" : "bg-gray-300"}`}
             onClick={async (e) => await fileMenu(e)}
           >
             Anexos
