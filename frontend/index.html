@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <script src="https://kit.fontawesome.com/799d216f10.js" crossorigin="anonymous"></script>
+  <title>Vite + React</title>
+</head>
+
+<body>
+  <div id="spinner" class="absolute z-10001">
+    <div class="h-screen w-screen bg-white flex items-center justify-center flex-col gap-2">
+      <img class="w-[200px]"
+        src="https://forms.salvador.ba.gov.br/uploads/documentos/8b3e37d036ee412d9c38de201c501f20.png">
+      <div class="animate-spin rounded-full h-10 w-10 border-b-4 border-gray-500 z-50 background-white">
+      </div>
+      <div>
+        <p class="text-2xl text-gray-500 font-bold">CARREGANDO O MAPA</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="root" class='w-screen h-screen'>
+  </div>
+  <script type="module" src="/src/server.jsx">
+
+  </script>
+</body>
+
+</html>

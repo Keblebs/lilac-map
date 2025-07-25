@@ -1,0 +1,52 @@
+@import "leaflet/dist/leaflet.css";
+@import "tailwindcss";
+@import "leaflet.markercluster/dist/MarkerCluster.Default.css";
+@import "leaflet.markercluster/dist/MarkerCluster.css";
+
+html,
+body,
+#app {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.custom-div-icon {
+  background: #ffffff;
+  border-radius: 50% 50% 50% 0 !important;
+  box-shadow: 0px 4px 2px 0px rgba(0, 0, 0, 0.2) !important;
+  border: 1px solid black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.hidden {
+  display: none !important;
+}
+.marker-selected {
+  background-color: lightblue !important;
+}
+
+.leaflet-interactive {
+  outline: none !important;
+  /* stroke-width: 2px !important; */
+}
+
+.legend {
+  line-height: 18px;
+  color: #555;
+}
+.legend i {
+  width: 18px;
+  height: 18px;
+  float: left;
+  margin-right: 8px;
+  opacity: 0.7;
+}
+
+.leaflet-control-attribution {
+  display: flex !important;
+  gap: 2px !important;
+}
