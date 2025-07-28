@@ -38,7 +38,7 @@ body,
   line-height: 18px;
   color: #555;
 }
-.legend i {
+.legend .square {
   width: 18px;
   height: 18px;
   float: left;
@@ -46,7 +46,22 @@ body,
   opacity: 0.7;
 }
 
+.minimized {
+  display: none !important;
+}
+
 .leaflet-control-attribution {
   display: flex !important;
   gap: 2px !important;
 }
+
+.gradient-text {
+  background:  radial-gradient(ellipse farthest-corner at right bottom, #FEDB37 0%, #FDB931 8%, #9f7928 30%, #8A6E2F 40%, transparent 80%),
+                radial-gradient(ellipse farthest-corner at left top, #FFFFFF 0%, #FFFFAC 8%, #D1B464 25%, #5d4a1f 62.5%, #5d4a1f 100%);
+
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+
+

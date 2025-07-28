@@ -10,7 +10,7 @@ import FloatingLogo from "./components/FloatingLogo.jsx";
 import FileViewer from "./components/FileViewer.jsx";
 import FileUploader from "./components/FileUploader.jsx";
 import Cookies from "js-cookie";
-import UserInterface from "./components/UserInferace.jsx";
+import UserInterface from "./components/UserInferface.jsx";
 
 function App() {
   useEffect(() => {

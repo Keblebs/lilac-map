@@ -24,7 +24,7 @@ export async function Main() {
     return
   }
 
-  let attribution = 'Contribuições <img src="https://forms.salvador.ba.gov.br/uploads/documentos/a43fa3f8fb7549558db7a037fc958d89.png" width="12px"> <a href="https://salvadordigital.salvador.ba.gov.br">Salvador Digital</a>'
+  let attribution = 'Monitoramento <img src="https://forms-homo.salvador.ba.gov.br/uploads/documentos/6cae515fa9a8415f9adb956541ced641.png" width="15px" height="12px"> <a href="https://atendimento156-homo.salvador.ba.gov.br" target="_blank">Botão Lilás</a>'
 
   let osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
@@ -97,12 +97,14 @@ export async function Main() {
 
   addLegend(mapMenager.map, mapMenager.bairrosCounts);
 
+
   document.querySelector('#spinner').remove()
 
 }
 
 function addLegend(map, data) {
   let legend = L.control({ position: 'bottomleft' });
+  let content = '';
   let higher = 0
   for (let key in data) {
     if (data[key] > higher) {
@@ -115,19 +117,54 @@ function addLegend(map, data) {
     let labels = [];
     for (let i = 0; i < grades.length; i++) {
       if (i == 0) {
-        labels.push(`<i style="background:${getColor(grades[i], data)}"></i> <strong class="text-md">${grades[i]}+</strong>`)
+        labels.push(`<i class="square" style="background:${getColor(grades[i], data)}"></i> <strong class="text-md">${grades[i]}+</strong>`)
       } else if (i == (grades.length - 1)) {
-        labels.push(`<i style="background:${getColor(grades[i], data)}"></i> <strong class="text-md">${grades[i]} - 0</strong>`)
+        labels.push(`<i class="square" style="background:${getColor(grades[i], data)}"></i> <strong class="text-md">${grades[i]} - 0</strong>`)
       } else {
-        labels.push(`<i style="background:${getColor(grades[i], data)}"></i> <strong class="text-md">${grades[i - 1]} - ${grades[i]}</strong>`);
+        labels.push(`<i class="square" style="background:${getColor(grades[i], data)}"></i> <strong class="text-md">${grades[i - 1]} - ${grades[i]}</strong>`);
       }
     }
-    div.innerHTML = labels.join('<br>');
-    div.classList.add('bg-white', 'p-2', 'rounded', 'border');
+    let div_labels = document.createElement('div');
+    div_labels.innerHTML = labels.join('<br>');
+    let div_info = document.createElement('div');
+    div_info.classList.add('flex', 'gap-2', 'flex-col');
+    div_info.innerHTML = `
+    <div>
+      <i class="text-[16px] fa-solid fa-venus text-[#ff1493]" aria-hidden="true"></i>
+      <label class="text-[16px]">Solicitação sem MP</label>
+    </div>
+    <div>
+      <i class="text-[16px] fa-solid fa-venus gradient-text" aria-hidden="true"></i>
+      <label class="text-[16px]">Solicitação com MP</label>
+    </div>   
+    <div>
+      <i class="text-[16px] fa-solid fa-car text-[#ff1493]" aria-hidden="true"></i>
+      <label class="text-[16px]">Solicitação com Viatura</label>
+    </div>
+        <div>
+      <i class="text-[16px] fa-solid fa-car gradient-text" aria-hidden="true"></i>
+      <label class="text-[16px]">Solicitação com Viatura + MP</label>
+    </div>
+    
+    `
+    div.appendChild(div_info)
+    div.appendChild(div_labels)
+    div.classList.add('bg-white', 'p-2', 'rounded', 'border', 'flex', 'flex-col', 'gap-2');
+    content = div.innerHTML
+    div.innerHTML = '<i class="fa-solid fa-circle-info text-2xl"></i>'
     return div;
   }
 
   legend.addTo(map);
+
+  let legendHTML = document.querySelector('.legend');
+  legendHTML.addEventListener('mouseleave', () => {
+    legendHTML.innerHTML = '<i class="fa-solid fa-circle-info text-2xl"></i>';
+  })
+
+  legendHTML.addEventListener('mouseenter', () => {
+    legendHTML.innerHTML = content
+  })
 }
 
 class MapGenerator {

@@ -30,17 +30,17 @@ function UserInterface() {
     check();
   }, [token]);
 
-  if (loading) {
-    return <p>Carregando...</p>;
-  }
+  // if (loading) {
+  //   return <p>Carregando...</p>;
+  // }
 
-  if (!token) {
-    return (
-      <div>
-        <button>Login</button>
-      </div>
-    );
-  }
+  // if (!token) {
+  //   return (
+  //     <div>
+  //       <button>Login</button>
+  //     </div>
+  //   );
+  // }
 
   console.log(user);
 

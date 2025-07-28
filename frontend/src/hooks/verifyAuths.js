@@ -1,7 +1,12 @@
 // hooks/verifyAuths.js
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 async function verifyAuths(token) {
+    function login() {
+        window.location.replace(import.meta.env.VITE_LOGIN);
+    }
+
     try {
         const body = { access_token: token };
         const res = await axios.post(import.meta.env.VITE_CHECAR_CIDADAO, body);
@@ -18,11 +23,14 @@ async function verifyAuths(token) {
                 dados: perfilRes.data,
                 permissoes: permsRes.data
             };
+        } else {
+            login();
         }
 
         return null;
     } catch (error) {
         console.error("Erro ao verificar autenticação:", error);
+        login();
         return null;
     }
 }

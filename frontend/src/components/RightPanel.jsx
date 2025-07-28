@@ -149,12 +149,12 @@ function RightPanel() {
             ))}
 
             {/* Botão fora do map */}
-            <InputFile solicitacao_id={panelData.identificador}/>
+            <InputFile solicitacao={panelData} filesQtd={files.length + 1}/>
           </div>
         ) : (
           <div className="flex flex-col gap-2">
             <label>Nenhum anexo encontrado</label>
-            <InputFile solicitacao_id={panelData.identificador} />
+            <InputFile solicitacao={panelData} filesQtd={files.length + 1}/>
           </div>
         )}
       </div>

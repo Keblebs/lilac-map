@@ -20,9 +20,35 @@ export function createMarker({ lat, lng, data }) {
         throw new Error('Leaflet library not found');
     }
 
+    let medida = false;
+    let viatura = false;
+
+    Object.values(data.respostas[0]).forEach((value) => {
+        // console.log(value);
+        if (value.titulo.toLowerCase().includes('medida')) {
+            medida = value.resposta == true || value.resposta.toLowerCase().includes('sim')
+        
+        } else if (value.titulo.toLowerCase().includes('viatura')) {
+            viatura = value.resposta == true || value.resposta.toLowerCase().includes('sim')
+        }
+    })
+
+    let html_class = 'text-[16px] ';
+    if (medida) {
+        html_class += ' gradient-text ';
+    } else {
+        html_class += 'text-[#ff1493] ';
+    }
+
+    if (viatura) {
+        html_class += 'fa-solid fa-car';
+    } else {
+        html_class += 'fa-solid fa-venus';
+    }
+
     const icon = L.divIcon({
         className: 'custom-div-icon',
-        html: '<i class="fa-solid fa-venus text-[16px] text-[#f7143c]"></i>',
+        html: '<i class="' + html_class + '"></i>',
         iconSize: [24, 24]
     });
 
