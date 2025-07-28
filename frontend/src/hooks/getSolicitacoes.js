@@ -6,6 +6,7 @@ export async function getSolicitacoes() {
     //     console.log('Chave ou slug não informados');
     //     return
     // }
-    const response = await axios.get(`https://forms-homo.salvador.ba.gov.br/api/flow/integracao-externa/solicitacao/?chave_integracao=d1bdc7f5-951b-4180-9417-849d7754ff1e&fluxo=spmj-botao-lilas20`);
+    const response = await axios.get(import.meta.env.VITE_CARREGAR_SOLICITACOES);
+    console.log(import.meta.env.VITE_CARREGAR_SOLICITACOES)
     return response.data;
 }

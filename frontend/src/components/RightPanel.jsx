@@ -16,8 +16,9 @@ function RightPanel() {
       setPanelOpen(true);
       let fields = {};
       fields.protocolo = e.detail?.data.protocolo;
-      fields.status = e.detail?.data.status;20250725518556
+      fields.status = e.detail?.data.status;
       fields.created_at = e.detail?.data.created_at;
+      fields.identificador = e.detail?.data.identificador;
       Object.values(e.detail?.data.respostas[0]).forEach((value) => {
         fields[value.titulo] = value.resposta;
       });
@@ -44,7 +45,7 @@ function RightPanel() {
     setMainMenu(false);
     setFilesInLoading(true);
     await axios
-      .get(`${import.meta.env.VITE_GET_FILES_ENDPOINT}/${panelData.protocolo}`)
+      .get(`${import.meta.env.VITE_GET_FILES}${panelData.protocolo}`)
       .then((response) => {
         setFiles(response.data);
       });
@@ -53,7 +54,7 @@ function RightPanel() {
 
   return (
     <div
-      className={`rightPanel absolute top-1 right-1 w-[350px] z-9999 bg-white p-2 rounded-md border ${
+      className={`rightPanel absolute top-2 right-2 w-[350px] z-9999 bg-white p-2 rounded-md border ${
         panelOpen ? "block" : "hidden"
       }`}
     >
@@ -94,14 +95,14 @@ function RightPanel() {
         <div className="grid grid-cols-2 border-b justify-evenly">
           <button
             className={`p-2 font-bold hover:bg-gray-300 cursor-pointer ${
-              mainMenu ? "bg-gray-300" : ""}`}
+              mainMenu ? "bg-gray-300 border" : ""}`}
             onClick={() => setMainMenu(true)}
           >
             Visão Geral
           </button>
           <button
             className={`p-2 font-bold hover:bg-gray-300 cursor-pointer ${
-              mainMenu ? "" : "bg-gray-300"}`}
+              mainMenu ? "" : "bg-gray-300 border"}`}
             onClick={async (e) => await fileMenu(e)}
           >
             Anexos
@@ -111,7 +112,7 @@ function RightPanel() {
           <>
             {Object.entries(panelData).map(
               ([key, value]) =>
-                !["protocolo", "status", "created_at"].includes(key) &&
+                !["protocolo", "status", "created_at", "identificador"].includes(key) &&
                 !key.includes("Violência") && (
                   <div key={key} className="rounded-md border-b p-1">
                     <strong className="text-[#ca1c3c]">{key}: </strong>
@@ -148,12 +149,12 @@ function RightPanel() {
             ))}
 
             {/* Botão fora do map */}
-            <InputFile />
+            <InputFile solicitacao_id={panelData.identificador}/>
           </div>
         ) : (
           <div className="flex flex-col gap-2">
             <label>Nenhum anexo encontrado</label>
-            <InputFile />
+            <InputFile solicitacao_id={panelData.identificador} />
           </div>
         )}
       </div>

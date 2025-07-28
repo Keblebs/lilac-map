@@ -224,7 +224,8 @@ class MapGenerator {
     let map = L.map('map', {
       maxBounds: bounds,
       maxBoundsViscosity: 1.0,
-      minZoom: 11 // Rigidez da limitação (0.0 a 1.0)
+      minZoom: 11, // Rigidez da limitação (0.0 a 1.0)
+      zoomControl: false
     }).setView([-12.974722, -38.476665], 12);
 
     setTimeout(() => { map.invalidateSize(); }, 100);
