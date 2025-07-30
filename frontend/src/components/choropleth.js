@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export async function setupChoropleth({ layer, data }) {
-    const response = await axios.get('https://raw.githubusercontent.com/Keblebs/geojson/main/municipios.json');
+    const response = await axios.get(import.meta.env.VITE_GET_MAP);
     const geojsonData = response.data;
 
     geojsonData.features.forEach(feature => {

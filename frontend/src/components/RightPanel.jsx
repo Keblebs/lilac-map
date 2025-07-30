@@ -47,6 +47,7 @@ function RightPanel() {
     await axios
       .get(`${import.meta.env.VITE_GET_FILES}${panelData.protocolo}`)
       .then((response) => {
+        console.log("Files", response.data);
         setFiles(response.data);
       });
     setFilesInLoading(false);
@@ -105,7 +106,7 @@ function RightPanel() {
               mainMenu ? "" : "bg-gray-300 border"}`}
             onClick={async (e) => await fileMenu(e)}
           >
-            Anexos
+            BEOC
           </button>
         </div>
         {mainMenu && Object.keys(panelData).length > 0 ? (
@@ -149,12 +150,12 @@ function RightPanel() {
             ))}
 
             {/* Botão fora do map */}
-            <InputFile solicitacao={panelData} filesQtd={files.length + 1}/>
+            <InputFile solicitacao={panelData} filesQtd={files.length}/>
           </div>
         ) : (
           <div className="flex flex-col gap-2">
             <label>Nenhum anexo encontrado</label>
-            <InputFile solicitacao={panelData} filesQtd={files.length + 1}/>
+            <InputFile solicitacao={panelData} filesQtd={files.length}/>
           </div>
         )}
       </div>

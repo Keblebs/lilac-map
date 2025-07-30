@@ -2,6 +2,9 @@ import express from "express";
 import axios from "axios";
 import dotenv from "dotenv";
 import cors from "cors";
+import fs from 'fs/promises';
+import path from 'path';
+
 
 const env = process.env.NODE_ENV || 'homolog';
 dotenv.config({ path: `.env.${env}` });
@@ -41,14 +44,20 @@ app.get("/get_files/:protocol", async (req, res) => {
 
     try {
         let response = await meta.post(`/api/card/${process.env.METABASE_CARD}/query`, {
-            ignore_cache: false,
-            collection_preview: false,
-            parameters: [
+            "ignore_cache": false,
+            "collection_preview": false,
+            "parameters": [
                 {
-                    id: "e3d8adf4-85bc-4693-8d5e-71596c85a185",
-                    type: "category",
+                    "id": "fc439b00-2984-428a-b6e1-1ecc3d810383",
+                    "type": "category",
                     value: "" + req.params.protocol,
-                    target: ["variable", ["template-tag", "protocolo"]],
+                    "target": [
+                        "variable",
+                        [
+                            "template-tag",
+                            "protocolo"
+                        ]
+                    ]
                 }
             ]
         });
@@ -117,4 +126,17 @@ app.get("/get_id/:identificador", async (req, res) => {
 });
 
 
-app.listen(process.env.PORT, () => console.log(`Example app listening on port ${process.env.PORT}!`));
+app.get('/get_map', async (req, res) => {
+    try {
+        const filePath = path.resolve('./data/map.geojson');
+        const geojson = await fs.readFile(filePath, 'utf8');
+        res.setHeader('Content-Type', 'application/json');
+        res.send(geojson);
+    } catch (err) {
+        console.error('Erro ao ler arquivo:', err);
+        res.status(500).send({ error: 'Erro ao carregar o mapa' });
+    }
+});
+
+
+app.listen(process.env.PORT, '0.0.0.0', () => console.log(`Example app listening on port ${process.env.PORT}!`));

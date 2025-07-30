@@ -147,9 +147,9 @@ function addLegend(map, data) {
     </div>
     
     `
-    div.appendChild(div_info)
     div.appendChild(div_labels)
-    div.classList.add('bg-white', 'p-2', 'rounded', 'border', 'flex', 'flex-col', 'gap-2');
+    div.appendChild(div_info)
+    div.classList.add('bg-white', 'p-2', 'rounded', 'border', 'flex', 'flex-row', 'gap-2');
     content = div.innerHTML
     div.innerHTML = '<i class="fa-solid fa-circle-info text-2xl"></i>'
     return div;

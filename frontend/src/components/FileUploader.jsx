@@ -2,24 +2,16 @@ import { useEffect, useState } from "react";
 import { CircleX } from "lucide-react";
 import Cookies from "js-cookie"; // caso o token esteja armazenado em cookie
 import axios from "axios";
+import verifyAuths from "../hooks/verifyAuths";
 
 function FileUploader() {
   const [opened, setOpened] = useState(false);
   const [solicitacao, setSolicitacao] = useState({});
+  const [filesQtd, setFilesQtd] = useState(0);
 
   useEffect(() => {
     function abrirForm(e) {
       setOpened(true);
-      // document
-      //   .querySelector("form")
-      //   .querySelectorAll("input, textarea")
-      //   .forEach((input) => (input.value = ""));
-
-      // document.querySelector("#assunto").value =
-      //   "Boletim de Ocorrência " +
-      //   e.detail.filesQtd +
-      //   " - " +
-      //   new Date().toLocaleDateString("pt-BR");
       axios
         .get(import.meta.env.VITE_GET_ID + e.detail.solicitacao.identificador)
         .then((response) => {
@@ -30,8 +22,8 @@ function FileUploader() {
         });
 
       let solicitacao = e.detail.solicitacao;
+      setFilesQtd(e.detail.filesQtd)
       document.querySelector("#nome").value = solicitacao["Nome Completo"];
-      console.log(e.detail.solicitacao);
       setSolicitacao(e.detail.solicitacao);
     }
 
@@ -44,40 +36,43 @@ function FileUploader() {
 
     const form = e.target;
     const formData = new FormData(form);
-    const token = Cookies.get("token"); // ou outro jeito de obter o token
+    let descricao = ''
+    formData.entries().forEach(([key, value]) => {
+      if (key == 'solicitacao' || key == 'arquivo') return
+      console.log(key, value);
+      descricao += `${key}=${value};`
+    })
 
+    const token = Cookies.get("token"); // ou outro jeito de obter o token
+    let newFormData = new FormData();
+    newFormData.append("solicitacao", solicitacao.id);
+    newFormData.append("assunto", `BEOC ${filesQtd + 1} ${new Date().toLocaleDateString("pt-BR")}`);
+    newFormData.append("descricao", descricao);
+    newFormData.append("arquivo", formData.get("arquivo"));
     try {
-      const response = await fetch(
-        `https://forms-homo.salvador.ba.gov.br/api/flow/anexo-resposta/?solicitacao_id=${solicitacao.identificador}`,
+      await fetch(
+        `${import.meta.env.VITE_ANEXAR_INTERNO}${solicitacao.identificador}`,
         {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,
             // 'Content-Type' NÃO DEVE ser definido manualmente com FormData!
           },
-          body: formData,
+          body: newFormData,
         }
       );
-
-      if (response.ok) {
-        alert("Documento enviado com sucesso!");
-        setOpened(false);
-      } else {
-        const erro = await response.text();
-        console.error("Erro ao enviar:", erro);
-        alert("Erro ao enviar o documento.");
-      }
     } catch (err) {
       console.error("Erro na requisição:", err);
       alert("Erro inesperado.");
     }
+    setOpened(false)
   };
 
   return (
     <div
       className={`absolute flex flex-col items-center justify-center w-full h-full top-0 left-0 z-10001 gap-4 ${
         !opened ? "hidden" : ""
-      } overflow-auto bg-black/85`}
+      } overflow-auto bg-black/85 p-5`}
     >
       {/* <CircleX
         className="absolute top-4 right-4 cursor-pointer"
@@ -85,28 +80,56 @@ function FileUploader() {
         color="#ffffff"
         onClick={() => setOpened(false)}
       /> */}
-      
+
       <form
-        className="grid grid-cols-2 gap-4 p-4 bg-white rounded-2xl overflow-y-auto relative"
+        className="w-3/5 m-auto p-2 bg-white rounded-2xl overflow-y-auto"
         onSubmit={handleSubmit}
       >
-        <a className="absolute top-0 right-0 cursor-pointer hover:bg-red-400  w-10 h-10 flex items-center justify-center font-bold transition-colors duration-100" onClick={() => setOpened(false)}>X</a>
+        <div className="grid grid-cols-2 gap-4  relative h-full w-full p-1 overflow-y-auto">
+          <a
+          className="absolute top-0 right-0 cursor-pointer hover:bg-red-400  w-10 h-10 flex items-center justify-center font-bold transition-colors duration-100"
+          onClick={() => setOpened(false)}
+        >
+          <CircleX size={30} color="#000000" />
+        </a>
 
         <input type="hidden" name="solicitacao" value={solicitacao.id || ""} />
+        {/* <img className="absolute top-5 left-5 w-20 h-20 flex items-center justify-center font-bold transition-colors duration-100" src="https://forms-homo.salvador.ba.gov.br/uploads/documentos/6cae515fa9a8415f9adb956541ced641.png"></img> */}
 
-        <label className="col-span-2 text-center font-bold text-2xl">
-          Boletim de Ocorrência
-        </label>
+        <div className="col-span-2 text-center font-bold grid grid-cols-4">
+          <img
+            className="w-20 h-20 flex items-center justify-center font-bold transition-colors duration-100"
+            src="https://forms-homo.salvador.ba.gov.br/uploads/documentos/6cae515fa9a8415f9adb956541ced641.png"
+          ></img>
+          <label className="text-2xl col-span-2">
+            <label className="text-xl">BEOC<br/></label>
+            
+            Boletim Eletrônico de Ocorrência de Campo
+          </label>
+        </div>
 
         <div className="flex flex-col">
-          <label htmlFor="nome" className="font-semibold text-gray-500">
-            Nome Completo da Vítima
+          <label htmlFor="nome_vitima" className="font-semibold text-gray-500">
+            Nome Completo da Vítima<label className="text-red-600">*</label>
           </label>
           <input
-            id="nome"
+            id="nome_vitima"
             type="text"
             className="border p-1"
-            name="nome"
+            name="nome_vitima"
+            required
+          ></input>
+        </div>
+
+        <div className="flex flex-col">
+          <label htmlFor="nome_agressor" className="font-semibold text-gray-500">
+            Nome Completo do Agressor<label className="text-red-600">*</label>
+          </label>
+          <input
+            id="nome_agressor"
+            type="text"
+            className="border p-1"
+            name="nome_agressor"
             required
           ></input>
         </div>
@@ -114,11 +137,13 @@ function FileUploader() {
         <div className="flex flex-col">
           <label htmlFor="violencia" className="font-semibold text-gray-500">
             Qual Tipo de Violência Sofrida
+            <label className="text-red-600">*</label>
           </label>
           <select
             id="violencia"
             className="border p-1"
             name="violencia"
+            required
             defaultValue={""}
           >
             <option value="">Selecione...</option>
@@ -132,13 +157,13 @@ function FileUploader() {
 
         <div className="flex flex-col">
           <label htmlFor="telefone" className="font-semibold text-gray-500">
-            Telefone
+            Telefone<label className="text-red-600">*</label>
           </label>
           <input
             id="telefone"
             type="text"
             name="telefone"
-            pattern="\([0-9]{2}\) [0-9]{4,5}-[0-9]{4}"
+            // pattern="\([0-9]{2}\) [0-9]{4,5}-[0-9]{4}"
             placeholder="(00) 00000-0000"
             className="border p-1"
             required
@@ -147,7 +172,7 @@ function FileUploader() {
 
         <div className="flex flex-col">
           <label htmlFor="logradouro" className="font-semibold text-gray-500">
-            Logradouro
+            Logradouro<label className="text-red-600">*</label>
           </label>
           <input
             id="logradouro"
@@ -160,7 +185,7 @@ function FileUploader() {
 
         <div className="flex flex-col">
           <label htmlFor="bairro" className="font-semibold text-gray-500">
-            Bairro
+            Bairro<label className="text-red-600">*</label>
           </label>
           <input
             id="bairro"
@@ -191,7 +216,7 @@ function FileUploader() {
             htmlFor="ponto_referencia"
             className="font-semibold text-gray-500"
           >
-            Ponto de Referência
+            Ponto de Referência<label className="text-red-600">*</label>
           </label>
           <input
             id="ponto_referencia"
@@ -207,14 +232,59 @@ function FileUploader() {
             Hora do Fato
           </label>
           <div className="flex gap-2">
-            <input className="border" type="date" name="data_fato"></input>
-            <input className="border" type="time" name="hora_fato"></input>
+            <input className="border p-1" type="date" name="data_fato"></input>
+            <input className="border p-1" type="time" name="hora_fato"></input>
           </div>
         </div>
 
         <label className="col-span-2 text-center font-bold text-1xl">
-          Informações Complementares
+          Informações Adicionais
         </label>
+
+        <div className="flex flex-col">
+          <label htmlFor="agente" className="font-semibold text-gray-500">
+            Nome do Agente Responsável<label className="text-red-600">*</label>
+          </label>
+          <input
+            id="agente"
+            type="text"
+            className="border p-1"
+            name="agente"
+            required
+          ></input>
+        </div>
+
+        <div className="flex flex-col">
+          <label htmlFor="vrt" className="font-semibold text-gray-500">
+            VRT
+          </label>
+          <input id="vrt" type="text" className="border p-1" name="vrt"></input>
+        </div>
+
+        <div className="flex flex-col col-span-2">
+          <label
+            htmlFor="encaminhamento"
+            className="font-semibold text-gray-500"
+          >
+            Qual foi o encaminhamento da vítima
+            <label className="text-red-600">*</label>
+          </label>
+          <select
+            id="encaminhamento"
+            className="border p-1"
+            name="encaminhamento"
+            required
+            defaultValue={""}
+          >
+            <option value="">Selecione...</option>
+            <option value={"Hospital"}>Hospital</option>
+            <option value={"CMB"}>CMB</option>
+            <option value={"UPA"}>UPA</option>
+            <option value={"Delegacia"}>Delegacia</option>
+            <option value={"Guanição PM"}>Guanição PM</option>
+            <option value={"Não Houve"}>Não Houve</option>
+          </select>
+        </div>
 
         <div className="col-span-2 flex gap-5">
           <label id="feminicio" htmlFor="feminicio">
@@ -245,10 +315,27 @@ function FileUploader() {
         </div>
 
         <div className="col-span-2 flex flex-col">
-          <label id="observacoes" htmlFor="observacoes" className="font-semibold text-gray-500">
+          <label
+            id="observacoes"
+            htmlFor="observacoes"
+            className="font-semibold text-gray-500"
+          >
             Observações
           </label>
           <textarea className="border" name="observacoes" rows="4"></textarea>
+        </div>
+
+        <div className="col-span-2 flex flex-col">
+          <input
+            id="documento"
+            name="arquivo"
+            className="flex border p-2"
+            accept="image/jpeg,image/png,.pdf"
+            type="file"
+            multiple
+            autoComplete="off"
+            required
+          />
         </div>
 
         <button
@@ -257,6 +344,8 @@ function FileUploader() {
         >
           Enviar
         </button>
+        </div>
+        
       </form>
     </div>
   );

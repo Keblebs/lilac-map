@@ -5,18 +5,22 @@ function InputFile({solicitacao, filesQtd}) {
   return (
     <button
       className="mt-2 p-2 font-bold hover:bg-gray-300 cursor-pointer border rounded w-full"
-      onClick={() => {
-        verifyAuths(Cookies.get("token"));
+      onClick={async ()  => {
+        let auth = await verifyAuths(Cookies.get("token"));
+        console.log(auth);
+        if (!auth) {
+          return;
+        }
         const evento = new CustomEvent("abrirForm", {
           detail: {
             solicitacao: solicitacao,
-            filesQtd: filesQtd || 1
+            filesQtd: filesQtd
           },
         });
         window.dispatchEvent(evento);
       }}
     >
-      Novo Anexo
+      Novo BEOC
     </button>
   );
 }
